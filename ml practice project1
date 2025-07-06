@@ -1,0 +1,104 @@
+import numpy as np
+import pandas as pd
+
+df = pd.read_csv('/content/drive/My Drive/Colab Notebooks/placement.csv')
+
+
+
+
+import os
+
+path = "/content/drive/My Drive/Colab Notebooks"
+files = os.listdir(path)
+
+for file in files:
+    print(file)
+
+
+df.head() #give the overview of the data by showing few columns
+
+df.shape #shows dimension of the data set (rows,columns)
+
+df = df.iloc[:,1:] # "Keep all the rows, but drop the first column" from the DataFrame df.
+
+df.head()
+
+""" steps:
+0: Preprocess+EDA+Feature Selection
+1:Extract input and output cols
+2:Scale the values
+3: Train test split
+4.Train the model
+5.Evaluate the model/model selection
+6.Deploy """
+
+#info gives information about all column
+df.info()
+
+import matplotlib.pyplot as plt
+
+plt.scatter(df['cgpa'],df['iq'])
+
+plt.scatter(df['cgpa'],df['iq'],c=df['placement'])  # It has colour coded showing whether placement happened or not
+
+x=df.iloc[:,0:2] #saare rows chahiye and 0 and 1 wala or last col chahiye
+y=df.iloc[:,-1] #saare rows chahiye and -1 wala or last col chahiye
+
+x
+
+y
+
+x.shape #2D tensor or matrix
+
+y.shape #1D tensor
+
+from sklearn.model_selection import train_test_split
+
+x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.1)
+
+
+x_train
+
+y_train
+
+x_test
+
+from sklearn.preprocessing import StandardScaler
+
+scaler=StandardScaler()
+
+x_train=scaler.fit_transform(x_train)
+
+x_train
+
+x_test=scaler.transform(x_test)
+
+x_test
+
+from sklearn.linear_model import LogisticRegression
+
+clf = LogisticRegression()
+
+
+# model training
+clf.fit(x_train,y_train)
+
+
+
+
+y_pred=clf.predict(x_test)
+
+from sklearn.metrics import accuracy_score
+
+accuracy_score(y_test,y_pred)
+
+from mlxtend.plotting import plot_decision_regions
+
+
+plot_decision_regions(x_train, y_train.values, clf=clf, legend=2)
+
+
+import pickle
+
+
+pickle.dump(clf,open('model.pkl','wb'))
